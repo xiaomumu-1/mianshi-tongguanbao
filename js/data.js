@@ -358,3 +358,11 @@ var QUESTIONS = [  { id: "self-intro-01", category: "自我介绍类", weight: "
       standard: "最近在读《销售加速公式》。书里核心观点是SaaS增长靠可复用的系统而不是几个天才销售。其中一个概念Deal Desk机制启发我在团队推了客户红线预警机制，响应速度从8小时缩到2小时。" },
     migrationTips: "如果最近没看书，可以说听行业播客或公众号，诚实展示学习习惯。" },];
 if (typeof window !== 'undefined') { window.QUESTIONS = QUESTIONS; }
+// ===== 工具函数 =====
+function getQuestionsByCategory(cat) { for (var i=0,res=[]; i<QUESTIONS.length; i++) { if (QUESTIONS[i].category===cat) res.push(QUESTIONS[i]); } return res; }
+function getCategories() { var cats=[]; for (var i=0; i<QUESTIONS.length; i++) { if (cats.indexOf(QUESTIONS[i].category)===-1) cats.push(QUESTIONS[i].category); } return cats; }
+function getQuestionById(id) { for (var i=0; i<QUESTIONS.length; i++) { if (QUESTIONS[i].id===id) return QUESTIONS[i]; } return null; }
+function getFreeQuestions() { for (var i=0,res=[]; i<QUESTIONS.length; i++) { if (!QUESTIONS[i].isPremium) res.push(QUESTIONS[i]); } return res; }
+function getPremiumQuestions() { for (var i=0,res=[]; i<QUESTIONS.length; i++) { if (QUESTIONS[i].isPremium) res.push(QUESTIONS[i]); } return res; }
+function searchQuestions(kw) { kw=kw.toLowerCase(); var res=[]; for (var i=0; i<QUESTIONS.length; i++) { var q=QUESTIONS[i]; if (q.question.toLowerCase().indexOf(kw)!==-1||q.category.toLowerCase().indexOf(kw)!==-1) res.push(q); } return res; }
+function getCategoryStats() { var s={}; for (var i=0; i<QUESTIONS.length; i++) { var q=QUESTIONS[i]; if (!s[q.category]) s[q.category]={total:0,free:0,premium:0}; s[q.category].total++; if (q.isPremium) s[q.category].premium++; else s[q.category].free++; } return s; }
