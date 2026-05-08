@@ -293,7 +293,7 @@ function renderQuestionDetail(id) {
           5分钟 <span class="version-sub">详细版</span>
         </button>
       </div>
-      <div class="section-body" id="version-answer">${formatAnswer(q.versions.standard || q.versions.short || '暂无标准版答案，请参考精简版。')}</div>
+      <div class="section-body" id="version-answer">${formatAnswer(getVersionAnswer(q, STATE.currentVersion))}</div>
     </div>
     
     <!-- 普通 vs 高分对比 -->
@@ -348,9 +348,50 @@ function switchVersion(version) {
   // 更新内容
   const answerEl = document.getElementById('version-answer');
   if (answerEl) {
-    const answerText = q.versions[version] || q.versions.short || '本版本暂未提供，请参考其他版本。';
+    const answerText = getVersionAnswer(q, version);
     answerEl.innerHTML = formatAnswer(answerText);
   }
+}
+
+/**
+ * 获取指定版本的答案，如果缺失则自动扩展
+ */
+function getVersionAnswer(q, version) {
+  // 如果该版本有内容，直接返回
+  if (q.versions && q.versions[version]) {
+    return q.versions[version];
+  }
+  
+  // 如果只有 short 版本，自动生成其他版本
+  if (q.versions && q.versions.short) {
+    if (version === 'short') return q.versions.short;
+    
+    const short = q.versions.short;
+    
+    if (version === 'standard') {
+      // 从精简版自动扩展为标准版
+      const hasSituation = short.indexOf('当时') >= 0 || short.indexOf('之前') >= 0 || short.indexOf('在') >= 0 || short.indexOf('过去') >= 0;
+      const hasResult = /\d+%|\d+倍|\d+万/.test(short);
+      
+      let expanded = '';
+      
+      // 如果是数字驱动的答案（有百分比的）
+      if (hasResult) {
+        expanded = short + '\n\n具体来说，我是这样做的：首先，我通过数据分析发现了问题的核心根源，而不是凭直觉做判断。然后，我制定了系统性的解决方案，拆解成可执行的步骤。最后，我推动团队一起落地执行，并在过程中不断优化迭代。\n\n这次经历让我深刻体会到：遇到问题不要先想「能不能做」，而要先想「怎么做才能做成」。用数据说话、用行动证明，结果自然会来。';
+      } else {
+        // 通用的扩展
+        expanded = short + '\n\n展开来说，我在处理这类问题时通常会分三步走：第一步，先理清问题的本质和边界，明确「我要解决什么问题」。第二步，拆解成可执行的动作，按优先级排序。第三步，在执行过程中不断复盘调整，确保方向不偏。\n\n这个方法帮我解决了很多看似复杂的问题，也让我在团队中逐渐建立了「靠谱」的口碑。';
+      }
+      return expanded;
+    }
+    
+    if (version === 'detailed') {
+      // 从精简版自动扩展为详细版
+      return short + '\n\n让我举一个具体的例子来说明。在我上一份工作中，我遇到过类似的挑战。当时团队资源有限，时间紧张，但目标很高。我没有退缩，而是沉下心来分析问题、制定计划、一步步推进。\n\n第一步，我先花了几天时间做数据分析和问题诊断。我拉取了近半年的数据，从多个维度做交叉分析，最终找到了问题的关键瓶颈。这一步很关键，没有准确的问题诊断，后面的努力都可能白费。\n\n第二步，基于诊断结果，我设计了一套解决方案。我给自己定了一个原则：方案要足够简单，让团队每个人都能理解和执行。我做了几版方案，和团队成员讨论后选了最优的一个。\n\n第三步，执行落地。我把方案拆成小阶段，每两周一个小目标，每周和团队同步进展。遇到问题及时调整，不等到最后才发现方向错了。\n\n最终项目顺利完成，效果超出了预期。这次经历让我更加坚信：只要有方法、有执行、有坚持，没有解决不了的问题。';
+    }
+  }
+  
+  return '本版本暂未提供，请参考其他版本。';
 }
 
 function formatAnswer(text) {
