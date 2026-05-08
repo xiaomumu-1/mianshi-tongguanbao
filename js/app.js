@@ -241,7 +241,7 @@ function renderQuestionDetail(id) {
       <div class="section-label">
         <span class="label-icon">🎯</span> 面试官想听什么
       </div>
-      <div class="section-body">${q.interviewerWants}</div>
+      <div class="section-body">${q.interviewerWants || q.question ? '考察你的回答逻辑、表达能力和岗位匹配度。面试官想通过这个问题判断你的思维方式和工作风格。' : '—'}</div>
     </div>
     
     <!-- 避坑指南 -->
@@ -249,7 +249,7 @@ function renderQuestionDetail(id) {
       <div class="section-label">
         <span class="label-icon">⚠️</span> 避坑指南
       </div>
-      <div class="section-body">${q.pitfallTips}</div>
+      <div class="section-body">${q.pitfallTips || '回答时注意逻辑清晰、有数据支撑，避免空泛的表述。'}</div>
     </div>
     
     <!-- STAR框架 -->
@@ -260,19 +260,19 @@ function renderQuestionDetail(id) {
       <div class="star-cards">
         <div class="star-card situation">
           <div class="star-letter">S - Situation（情境）</div>
-          <div class="star-example">${q.starFramework.situation}</div>
+          <div class="star-example">${q.starFramework ? q.starFramework.situation : '描述当时的工作背景、团队情况和面临的问题。'}</div>
         </div>
         <div class="star-card task">
           <div class="star-letter">T - Task（任务）</div>
-          <div class="star-example">${q.starFramework.task}</div>
+          <div class="star-example">${q.starFramework ? q.starFramework.task : '说明你的具体任务或目标，尽量量化。'}</div>
         </div>
         <div class="star-card action">
           <div class="star-letter">A - Action（行动）</div>
-          <div class="star-example">${q.starFramework.action}</div>
+          <div class="star-example">${q.starFramework ? q.starFramework.action : '重点讲你做了什么、怎么思考的、如何推动的。'}</div>
         </div>
         <div class="star-card result">
           <div class="star-letter">R - Result（结果）</div>
-          <div class="star-example">${q.starFramework.result}</div>
+          <div class="star-example">${q.starFramework ? q.starFramework.result : '描述最终的结果、数据和影响，最好有量化指标。'}</div>
         </div>
       </div>
     </div>
@@ -293,7 +293,7 @@ function renderQuestionDetail(id) {
           5分钟 <span class="version-sub">详细版</span>
         </button>
       </div>
-      <div class="section-body" id="version-answer">${formatAnswer(q.versions.standard)}</div>
+      <div class="section-body" id="version-answer">${formatAnswer(q.versions.standard || q.versions.short || '暂无标准版答案，请参考精简版。')}</div>
     </div>
     
     <!-- 普通 vs 高分对比 -->
@@ -304,15 +304,15 @@ function renderQuestionDetail(id) {
       <div class="compare-grid">
         <div class="compare-card poor">
           <div class="compare-label">❌ 普通回答</div>
-          <div class="compare-text">${q.compareExample.poor}</div>
+          <div class="compare-text">${q.compareExample && q.compareExample.poor ? q.compareExample.poor : '回答得比较笼统，面试官听完没什么印象，缺乏数据和逻辑支撑。'}</div>
         </div>
         <div class="compare-card excellent">
           <div class="compare-label">✅ 高分回答</div>
-          <div class="compare-text">${q.compareExample.excellent}</div>
+          <div class="compare-text">${q.compareExample && q.compareExample.excellent ? q.compareExample.excellent : '用STAR法则组织回答，有具体场景、行动和量化结果，让面试官印象深刻。'}</div>
         </div>
       </div>
       <div class="key-diff">
-        <span class="diff-label">💡 核心差异：</span>${q.compareExample.keyDiff}
+        <span class="diff-label">💡 核心差异：</span>${q.compareExample && q.compareExample.keyDiff ? q.compareExample.keyDiff : '普通回答没有重点和证据，高分回答有结构、有数据、有结果。'}
       </div>
     </div>
     
@@ -322,7 +322,7 @@ function renderQuestionDetail(id) {
         <span class="label-icon">🔄</span> 经历迁移话术
       </div>
       <div class="migration-box">
-        <span class="migration-label">💡 如果经历不匹配：</span>${q.migrationTips}
+        <span class="migration-label">💡 如果经历不匹配：</span>${q.migrationTips || '即使没有直接相关经历，也可以提炼底层可迁移能力，展示学习意愿和行业理解来弥补差距。'}
       </div>
     </div>
   `;
@@ -348,7 +348,8 @@ function switchVersion(version) {
   // 更新内容
   const answerEl = document.getElementById('version-answer');
   if (answerEl) {
-    answerEl.innerHTML = formatAnswer(q.versions[version]);
+    const answerText = q.versions[version] || q.versions.short || '本版本暂未提供，请参考其他版本。';
+    answerEl.innerHTML = formatAnswer(answerText);
   }
 }
 
@@ -551,7 +552,7 @@ function pickRandomQuestion() {
   if (hintEl) {
     hintEl.innerHTML = `建议使用STAR法则回答。<br>
       权重：${questions[idx].weight}频 | 
-      面试官主要考察：${questions[idx].interviewerWants.substring(0, 50)}...`;
+      面试官主要考察：${(questions[idx].interviewerWants || '你的回答逻辑、表达能力和岗位匹配度。').substring(0, 50)}...`;
   }
   
   resetTimer();
