@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="面试通关宝 - 精选面试必考题，STAR法则高分回答，15年HR面试教练打造">
+  <title>面试通关宝 - 面试必备工具</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ========== 顶部导航 ========== -->
+  <header class="app-header">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="logo">
+        <span class="logo-icon">🎯</span> 面试通关宝
+      </span>
+    </div>
+    <div class="header-actions" id="header-actions">
+      <button class="btn-ghost" onclick="navigateTo('profile')" style="color:white;font-size:14px;padding:4px 8px;">
+        👤 我的
+      </button>
+    </div>
+  </header>
+
+  <!-- ========== Toast ========== -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ========== 页面：首页/题库 ========== -->
+  <div class="page active" id="page-home">
+    <div class="section-title">📚 面试题库</div>
+    <div class="section-subtitle">精选 <strong>51</strong> 道面试必考题，含STAR框架满分回答</div>
+    
+    <!-- 搜索框 -->
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="搜索面试题目..." oninput="handleSearch(event)">
+    </div>
+    
+    <!-- 分类标签 -->
+    <div class="category-tabs" id="category-tabs"></div>
+    
+    <!-- 题目列表 -->
+    <div id="question-list"></div>
+  </div>
+
+  <!-- ========== 页面：题目详情 ========== -->
+  <div class="page" id="page-question-detail">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px;">
+      <button class="back-btn" onclick="navigateTo('home')" style="color:var(--primary);font-size:20px;padding:0;">← 返回</button>
+      <div style="flex:1;"></div>
+      <button id="qd-fav-btn" class="btn btn-ghost" style="font-size:13px;">☆ 收藏</button>
+    </div>
+    <div class="q-detail">
+      <div class="q-d-title" id="qd-title"></div>
+      <div class="q-d-meta" id="qd-meta"></div>
+      <div id="qd-content"></div>
+    </div>
+  </div>
+
+  <!-- ========== 页面：STAR教学 ========== -->
+  <div class="page" id="page-star-guide">
+    <div class="section-title">📐 STAR法则指南</div>
+    <div class="section-subtitle">面试最强回答框架，掌握它你的回答会提升一个档次</div>
+    <div id="star-guide-content"></div>
+  </div>
+
+  <!-- ========== 页面：模拟面试 ========== -->
+  <div class="page" id="page-practice">
+    <div class="section-title">🎤 模拟面试</div>
+    <div class="section-subtitle">随机抽题 + 计时训练，模拟真实面试场景</div>
+    <div id="practice-content"></div>
+  </div>
+
+  <!-- ========== 页面：我的 ========== -->
+  <div class="page" id="page-profile">
+    <div class="section-title">👤 我的</div>
+    <div id="profile-content"></div>
+  </div>
+
+  <!-- ========== 页面：解锁 ========== -->
+  <div class="page" id="page-unlock">
+    <div class="unlock-page">
+      <div class="unlock-icon">🔓</div>
+      <h2>解锁全部内容</h2>
+      <p>
+        一次性付费 <strong>¥9.9</strong>，永久解锁全部 <strong>51</strong> 道面试必考题<br>
+        含完整STAR答案、模拟面试等全部功能
+      </p>
+      
+      <!-- 步骤指引 -->
+      <div style="background:var(--card-bg);border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:var(--shadow);text-align:left;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;color:var(--primary);">📋 解锁步骤</div>
+        <div style="font-size:13px;line-height:2;color:var(--text-secondary);">
+          <strong>第1步</strong> 👉 长按下方收款码，扫码支付 <strong>¥9.9</strong><br>
+          <strong>第2步</strong> 👉 长按下方公众号二维码，关注公众号<br>
+          <strong>第3步</strong> 👉 在公众号回复「<strong>面试通关宝</strong>」，获取解锁码<br>
+          <strong>第4步</strong> 👉 在下方输入解锁码，点击确认
+        </div>
+      </div>
+      
+      <!-- 付款码 -->
+      <div style="background:var(--card-bg);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--danger);">💳 扫码付款 ¥9.9</div>
+        <img src="assets/qrcode-pay.jpg" alt="微信收款码" style="width:180px;height:180px;display:block;margin:0 auto;border-radius:8px;">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center;">长按识别二维码 → 支付 ¥9.9</div>
+      </div>
+      
+      <!-- 公众号二维码 -->
+      <div style="background:var(--card-bg);border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:var(--shadow);">
+        <div style="font-size:13px;font-weight:700;margin-bottom:8px;color:var(--success);">📢 关注公众号获取解锁码</div>
+        <img src="assets/qrcode-mp.jpg" alt="公众号二维码" style="width:180px;height:180px;display:block;margin:0 auto;border-radius:8px;">
+        <div style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center;">长按识别 → 关注 → 回复「面试通关宝」</div>
+      </div>
+      
+      <!-- 解锁码输入 -->
+      <div class="unlock-input-group">
+        <input type="text" id="unlock-code-input" placeholder="输入收到的解锁码" maxlength="10" autocomplete="off">
+        <button class="btn-unlock-submit" onclick="submitUnlockCode()">确认解锁 🚀</button>
+      </div>
+      
+      <div style="margin-top:12px;">
+        <button class="btn btn-ghost" onclick="navigateTo('home')" style="font-size:13px;color:var(--text-secondary);">
+          ← 先免费看看
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========== 底部导航 ========== -->
+  <nav class="bottom-nav">
+    <button class="nav-item active" data-page="home" onclick="navigateTo('home')">
+      <span class="nav-icon">📚</span>
+      题库
+    </button>
+    <button class="nav-item" data-page="star-guide" onclick="navigateTo('star-guide')">
+      <span class="nav-icon">📐</span>
+      STAR法则
+    </button>
+    <button class="nav-item" data-page="practice" onclick="navigateTo('practice')">
+      <span class="nav-icon">🎤</span>
+      模拟
+    </button>
+    <button class="nav-item" data-page="profile" onclick="navigateTo('profile')">
+      <span class="nav-icon">👤</span>
+      我的
+    </button>
+  </nav>
+
+  <!-- ========== Scripts ========== -->
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>
